@@ -11,3 +11,6 @@ There should be a seamless way to save visited recipes, auto-organize them by di
 ## Notes
 ssh -i [key pair file] ubuntu@recipefinder.click
 Caddy enables us to get free https certificates.
+
+## Ideas
+what if, instead, I did an app that can scrape a pdf and change the font, do a speedreading thing where it just flashes each word individually rapidly, MAYBE reads it out loud, stores the text in a more efficient format, etc.
