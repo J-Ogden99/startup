@@ -7,6 +7,7 @@
     <title>Study Buddy Card Creation</title>
     <link rel="stylesheet" href="main.css">
     <link rel="stylesheet" href="colors.css">
+    <link rel="stylesheet" href="review.css">
     <link
             href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
             rel="stylesheet"
@@ -40,6 +41,30 @@
         </div>
     </nav>
 </header>
+
+<main id="review-main" class="container-fluid text-center color-primary-2-gradient">
+    <div class="container-fluid card-view-wrapper">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Word</h5>
+                <p class="card-text">Explanation</p>
+            </div>
+            <div class="card-flipside d-none">
+                <h5 class="card-title">Word</h5>
+                <p class="card-text">Explanation</p>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid control-bar bg-light">
+        <h5>Set Review Frequency</h5>
+        <button class="btn btn-light rounded-circle active">1</button>
+        <button class="btn btn-light rounded-circle">2</button>
+        <button class="btn btn-light rounded-circle active">3</button>
+        <button class="btn btn-light rounded-circle">4</button>
+        <button class="btn btn-light rounded-circle active">5</button>
+        <button class="btn btn-light rounded-circle">6</button>
+    </div>
+</main>
 
 <footer class="bg-dark text-dark text-muted">
     <div class="container-fluid">

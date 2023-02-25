@@ -1,0 +1,15 @@
+#review-main {
+    flex-direction: row;
+    margin-top: 56px;
+}
+
+.card-view-wrapper {
+    flex: 4;
+    display: flex;
+    align-items: center;
+}
+
+.control-bar {
+    flex: 1;
+    margin: 0;
+}
