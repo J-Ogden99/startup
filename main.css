@@ -5,11 +5,33 @@ body {
     height: 100vh;
 }
 header {
-    flex: 0 80px;
+    flex: 0;
+}
+
+nav {
+
 }
 
 main {
+    flex: 5 calc(100vh - 110px);
     display: flex;
+    flex-direction: column;
     justify-content: center;
+    overflow-y: hidden;
+}
 
+footer {
+    flex: 0 30px;
+}
+
+@media (max-height: 600px) {
+    header {
+        display: none;
+    }
+    footer {
+        display: none;
+    }
+    main {
+        flex: 1 100vh;
+    }
 }

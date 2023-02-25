@@ -1,0 +1,67 @@
+main {
+    flex-direction: row;
+}
+
+#cardset-carousel {
+    flex: 1;
+}
+
+#card-creation {
+    flex: 3;
+}
+
+vert-carousel-wrapper {
+    overflow-y: scroll;
+}
+
+.vert-carousel-wrapper .card {
+    margin: 1.5rem 0;
+    position: absolute;
+    pointer-events: none;
+    animation: animate 15s infinite linear;
+    animation-delay: calc(3s * var(--delay));
+}
+
+.vert-carousel-wrapper .card:last-child {
+    animation-delay: calc(-3s * var(--delay));
+}
+
+main:hover .card {
+    animation-play-state: paused;
+}
+
+@keyframes animate {
+    0% {
+        opacity: 0;
+        transform: translateY(100%) scale(0.5);
+    }
+    5%, 20% {
+        opacity: 0.4;
+        transform: translateY(100%) scale(0.7);
+    }
+    25%, 40% {
+        opacity: 1;
+        pointer-events: all;
+        transform: translateY(0%) scale(1);
+    }
+    45%, 60% {
+        opacity: 0.4;
+        transform: translateY(-100%) scale(0.7);
+    }
+    65%, 100% {
+        opacity: 0.4;
+        transform: translateY(-100%) scale(0.5);
+    }
+}
+
+@media (orientation: portrait) {
+    #cardset-carousel {
+        display: none;
+    }
+}
+
+@media (max-width: 1000px) {
+    #cardset-carousel {
+        flex:3;
+    }
+}

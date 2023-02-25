@@ -40,18 +40,28 @@
         </div>
     </nav>
 </header>
-<main>
-    <div class="container-fluid">
+<main id="home-main" class="container-fluid text-center">
+    <div id="login-div" class="container-fluid">
+        <p>Login to Learn</p>
+<!--        <form>-->
+        <input type="text" id="name" placeholder="Your name here" />
+        <button type="submit"
+                class="btn btn-primary"
+                onclick="login(document.getElementById('name').value)"
+        >Login</button>
+<!--        </form>-->
+    </div>
+    <div id="home-cards-div" class="container-fluid d-none">
         <div class="row">
             <div class="col-sm-12">
                 <div class="card text-center mb-3">
                     <div class="card-header">
-                        Featured
+                        Review
                     </div>
                     <div class="card-body">
-                        <h5 class="card-title">Special title treatment</h5>
-                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                        <a href="#" class="btn btn-primary">Go somewhere</a>
+                        <h5 class="card-title">Up for Review Today</h5>
+                        <p class="card-text">Take a look at the card sets scheduled for review today!</p>
+                        <a href="#" class="btn btn-primary">Let's Go!</a>
                     </div>
                     <div class="card-footer text-muted">
                         2 days ago
@@ -63,12 +73,27 @@
             <div class="col-sm-6">
                 <div class="card text-center mb-3">
                     <div class="card-header">
-                        Featured
+                        Create
                     </div>
                     <div class="card-body">
-                        <h5 class="card-title">Special title treatment</h5>
-                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                        <a href="#" class="btn btn-primary">Go somewhere</a>
+                        <h5 class="card-title">Add Today's Notes</h5>
+                        <p class="card-text">Be sure to add concepts from today's lectures you want to remember!</p>
+                        <a href="#" class="btn btn-primary">Let's Go!</a>
+                    </div>
+                    <div class="card-footer text-muted">
+                        2 days ago
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="card text-center mb-3">
+                    <div class="card-header">
+                        Learn
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Recently Created Cards</h5>
+                        <p class="card-text">Take a look at your most recently created cards!</p>
+                        <a href="#" class="btn btn-primary">Let's Go!</a>
                     </div>
                     <div class="card-footer text-muted">
                         2 days ago
@@ -78,8 +103,15 @@
         </div>
     </div>
 </main>
-<footer>
-
+<footer class="bg-dark text-dark text-muted">
+    <div class="container-fluid">
+        <span class="text-reset">Author: Josh Ogden</span>
+        <a
+                class="text-reset"
+                href="https://github.com/J-Ogden99/startup"
+        >GitHub</a
+        >
+    </div>
 </footer>
 
 <script src="index.js"></script>
