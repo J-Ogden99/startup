@@ -35,4 +35,6 @@ flashed at a quick rate than if we were trying to look at it in the context of a
 
 - a scrolling animation for a vertical carousel is possible by manipulating the position, opacity, and scale in css
 
-- 
+- reduce() on a JavaScript array applies a function to the whole array to reduce it to a single value, like sum or average for example.
+
+- objects can have functions as a value, which can be called like a member function of a class, but a class would be used for something that's going to be reused a lot, whereas an object that has functions would be more of a one-off thing because it's easier to define key-value pairs than to set member variables in a class constructor (although objects can have a constructor too.
