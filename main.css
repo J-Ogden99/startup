@@ -1,3 +1,5 @@
+@import url("colors.css") root;
+
 body {
     display: flex;
     flex-direction: column;
@@ -6,19 +8,23 @@ body {
 }
 header {
     flex: 0;
-}
-
-nav {
-
+    padding-left: 0;
+    background: var(--color-primary-0);
 }
 
 main {
     flex: 5 calc(100vh - 110px);
+    background: var(--color-primary-2-gradient);
+    padding: 5px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-content: center;
-    overflow-y: hidden;
+    /*overflow-y: scroll;*/
+}
+
+#home-main {
+    background: var(--color-primary-0);
 }
 
 footer {
@@ -34,9 +40,16 @@ footer {
     justify-content: center;
 }
 
-.card-view-wrapper .card {
-    max-height: 20rem;
-    max-width: 30rem;
+.flashcard {
+    flex: 0 1 600px;
+    aspect-ratio: 5 / 3;
+}
+
+.side-bar {
+    flex: 0 1 200px;
+    /*margin: 5px;*/
+    border-radius: 20px;
+
 }
 
 @media (max-height: 600px) {
@@ -48,5 +61,18 @@ footer {
     }
     main {
         flex: 1 100vh;
+    }
+}
+
+@media (max-width: 500px) {
+    .side-bar {
+        display: none;
+    }
+}
+
+@media (orientation: portrait) {
+    .side-bar {
+        display: none;
+        position: fixed;
     }
 }

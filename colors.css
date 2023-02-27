@@ -6,13 +6,18 @@
 
 
 /* As hex codes */
+:root {
+    --color-primary-0: #531DFF;
+    --color-primary-2-gradient: radial-gradient(ellipse, #C1AEFF  0, #9E80FF 70%, #5f30f5);
+}
+
 
 .color-primary-0 { background-color: #531DFF }	/* Main Primary color */
 .color-primary-1 { background-color: #C1AEFF }
 .color-primary-2 { background-color: #9E80FF }
 .color-primary-2-gradient {
     background: #9E80FF;
-    background: radial-gradient(ellipse, #5f30f5 0, #9E80FF 70%, #C1AEFF);
+    background: radial-gradient(ellipse, #C1AEFF  0, #9E80FF 70%, #5f30f5);
 }
 .color-primary-3 { background-color: #230095 }
 .color-primary-4 { background-color: #1B0073 }

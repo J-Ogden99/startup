@@ -17,7 +17,7 @@
 <body class="text-dark color-primary-0">
 <header class="container-fluid">
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-sm fixed-top navbar-dark color-primary-0">
+    <nav class="navbar navbar-expand-sm navbar-dark color-primary-0">
         <a class="navbar-brand" href="#">Study Buddy</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -42,9 +42,10 @@
 </header>
 <main id="home-main" class="container-fluid text-center">
     <div id="login-div" class="container-fluid">
-        <p>Login to Learn</p>
+        <p class="text-light">Login to Learn</p>
+        <label class="text-light" for="username">Username</label>
 <!--        <form>-->
-        <input type="text" id="name" placeholder="Your name here" />
+        <input id="username" type="text" id="name" placeholder="Your name here" />
         <button type="submit"
                 class="btn btn-primary"
                 onclick="login(document.getElementById('name').value)"

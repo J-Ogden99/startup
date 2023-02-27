@@ -30,7 +30,7 @@ flashed at a quick rate than if we were trying to look at it in the context of a
 
 - Refer here for an example theme: https://github.com/startbootstrap/startbootstrap-sb-admin-2
 
-- fixed-top and bottom are a little tricky for header and footer because the body then tucks under them. I need to look
+-  and bottom are a little tricky for header and footer because the body then tucks under them. I need to look
   into that. 
 
 - a scrolling animation for a vertical carousel is possible by manipulating the position, opacity, and scale in css
