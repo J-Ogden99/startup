@@ -30,11 +30,21 @@ flashed at a quick rate than if we were trying to look at it in the context of a
 
 - Refer here for an example theme: https://github.com/startbootstrap/startbootstrap-sb-admin-2
 
--  and bottom are a little tricky for header and footer because the body then tucks under them. I need to look
-  into that. 
+- and bottom are a little tricky for header and footer because the body then tucks under them. I need to look
+  into that.
 
 - a scrolling animation for a vertical carousel is possible by manipulating the position, opacity, and scale in css
 
-- reduce() on a JavaScript array applies a function to the whole array to reduce it to a single value, like sum or average for example.
+- reduce() on a JavaScript array applies a function to the whole array to reduce it to a single value, like sum or
+  average for example.
 
-- objects can have functions as a value, which can be called like a member function of a class, but a class would be used for something that's going to be reused a lot, whereas an object that has functions would be more of a one-off thing because it's easier to define key-value pairs than to set member variables in a class constructor (although objects can have a constructor too.
+- objects can have functions as a value, which can be called like a member function of a class, but a class would be
+  used for something that's going to be reused a lot, whereas an object that has functions would be more of a one-off
+  thing because it's easier to define key-value pairs than to set member variables in a class constructor (although
+  objects can have a constructor too.
+
+- for the Simon Javascript assignment, I decided to stretch myself by adding functionality to map certain keys to each
+  button, because using my trackpad was getting annoying, so I had to learn about the "keydown" event, which has a 
+  "code" attribute that allows a conditional to be made that triggers certain events based on keys, which can be mapped
+  in an Object.
+- I should also refer back to the simon code to learn how to work with Audio files in JavaScript
