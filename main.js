@@ -1,3 +1,32 @@
+let db;
+document.addEventListener('DOMContentLoaded', function() {
+    db = new Database();
+
+    const carousel = new VerticalCardCarousel(".vert-carousel-wrapper", ".card", 2);
+    // carousel.start();
+
+});
+
+function getSiblings (element) {
+    // for collecting siblings
+    let siblings = [];
+    // if no parent, return no sibling
+    if(!element.parentNode) {
+        return siblings;
+    }
+    // first child of the parent node
+    let sibling  = element.parentNode.firstChild;
+
+    // collecting siblings
+    while (sibling) {
+        if (sibling.nodeType === 1 && sibling !== element) {
+            siblings.push(sibling);
+        }
+        sibling = sibling.nextSibling;
+    }
+    return siblings;
+};
+
 class FlashCardSide {
     constructor(name, desc) {
         this.name = name;
@@ -8,9 +37,21 @@ class FlashCardSide {
             `<h5 class="card-title">${name}</h5>\n` +
             ` <p class="card-text">${desc}</p>`
     }
+
+    changeNameDesc(name, desc) {
+        this.name = name;
+        this.desc = desc;
+    }
+    changeToInput() {
+        this.element.innerHTML =
+            `<input type="text" class="card-title" placeholder="Name"></input>\n` +
+            `<input type="text" class="card-title" placeholder="Description"></input>`
+        return this;
+    }
 }
 class FlashCard {
-    constructor(frontName, frontDesc, backName, backDesc) {
+    constructor(cardSetName, frontName, frontDesc, backName, backDesc) {
+        this.cardset = db.CardSets[cardSetName];
         this.front = new FlashCardSide(frontName, frontDesc);
         this.front.element.classList.add("card-body");
 
@@ -21,6 +62,14 @@ class FlashCard {
         this.card.setAttribute("class", "card flashcard");
         this.card.appendChild(this.front.element);
         this.card.appendChild(this.back.element);
+    }
+
+    createId() {
+        let id = Math.floor(Math.random() * 10000);
+        // while (this.cardset.cardIds.includes(id)) {
+        //     id = Math.floor(Math.random() * 10000);
+        // }
+        return id;
     }
 
     flip() {
@@ -34,22 +83,84 @@ class FlashCard {
     }
 }
 
+class FlashCardInput {
+    constructor() {
+        this.front = new FlashCardSide("", "").changeToInput();
+        this.back = new FlashCardSide("", "").changeToInput();
+        this.front.element.style.borderBottom = "1px black";
+
+        this.card = document.createElement("div");
+        this.card.setAttribute("class", "card flashcard");
+        this.card.appendChild(this.front.element);
+        this.card.appendChild(this.back.element);
+    }
+}
+
 class CardSet {
     constructor(setName, desc) {
+        this.id = this.createId();
         this.name = setName;
         this.desc = desc;
         this.infoCard = document.createElement("div");
-        this.infoCard.setAttribute("class", "card");
+        this.infoCard.setAttribute("class", "card cardset-info");
         this.infoCard.setAttribute("id",
             `${setName.toLowerCase().replace(/[\s_]+/g, "-")}`);
         this.infoCard.innerHTML =
             '<div class="card-body">\n' +
             `  <h5 class="card-title">${setName}</h5>\n` +
             `  <p class="card-text">${desc}</p>\n` +
-            '  <a href="#" class="btn btn-primary">Learn</a>\n' +
-            '  <a href="#" class="btn btn-primary">Edit</a>\n' +
+            '  <button type="button" class="btn btn-primary learn-btn">Learn</button>\n' +
+            '  <button type="button" class="btn btn-primary edit-btn">Edit</button>\n' +
+            '  <button type="button" class="btn btn-primary add-to-set-btn">Add</button>\n' +
             '</div>'
 
+        this.cardIds = [];
+        this.cards = [];
+
+        this.infoCard.querySelector('.learn-btn').addEventListener('click', () => {
+            this.learn();
+        });
+        console.log(this.infoCard)
+
+        this.infoCard.querySelector('.edit-btn').addEventListener('click', () => {
+            this.edit();
+        });
+
+        this.infoCard.querySelector('.add-to-set-btn').addEventListener('click', () => {
+            this.initAdd();
+        });
+    }
+
+    createId() {
+        let id = Math.floor(Math.random() * 10000);
+        // while (db.CardSetIds.includes(id)) {
+        //     id = Math.floor(Math.random() * 10000);
+        // }
+        return id;
+    }
+
+    learn() {
+        return;
+    }
+
+    edit() {
+
+    }
+
+    initAdd() {
+        let parent = this.infoCard.parentNode;
+        parentNode.querySelector('.cardset-info').classList.remove('selected-cardset');
+        this.infoCard.classList.add('selected-cardset');
+        let createCardCont = document.getElementById("card-creation");
+        createCardCont.innerHTML = '';
+
+        let cardInput = new FlashCardInput();
+        createCardCont.appendChild(cardInput.card);
+    }
+
+    add(card) {
+        this.cards.push(card);
+        this.cardIds.push(card.id);
     }
 }
 
@@ -60,7 +171,7 @@ class VerticalCardCarousel {
         this.carousel = document.createElement("div");
         this.carousel.setAttribute("class", "carousel")
         this.container.appendChild(this.carousel);
-        let db = new Database();
+
         console.log(db);
 
         for (let cardset of Object.values(db.CardSets)) {
@@ -77,6 +188,19 @@ class VerticalCardCarousel {
         // Set up the animation interval
         this.intervalId = null;
         this.intervalDelay = 20; // Delay between each animation frame (in milliseconds)
+
+        this.carousel.addEventListener('click', function(event) {
+            console.log(event.target)
+            if (event.target.classList.contains('btn')) {
+                let event = new MouseEvent('click', {
+                    bubbles: true,
+                    cancelable: true,
+                    view: window
+                });
+
+                event.target.dispatchEvent(event);
+            }
+        })
     }
 
     start() {
@@ -118,20 +242,16 @@ function login(name) {
 class Database {
     constructor() {
         this.CardSets = {};
+        // this.CardSetIds = [];
         let name, desc;
         for (let i = 1; i < 5; i++) {
             name = `Set ${i}`;
             desc = `Description of Set ${i}`;
             this.CardSets[`Set ${i}`] = new CardSet(name, desc);
+            // this.CardSetIds.push(this.CardSets[`Set ${i}`].id);
         }
     }
 }
-
-document.addEventListener('DOMContentLoaded', function() {
-    // Usage example:
-    const carousel = new VerticalCardCarousel(".vert-carousel-wrapper", ".card", 2);
-    // carousel.start();
-});
 
 
 

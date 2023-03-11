@@ -31,6 +31,16 @@ footer {
     flex: 0 30px;
 }
 
+button {
+    position: relative;
+    z-index: 1;
+}
+
+.carousel {
+    position: relative;
+    z-index: 2;
+}
+
 .card-view-wrapper {
     height: 100%;
     flex: 0 1;
@@ -57,6 +67,10 @@ footer {
 .card-flipside {
     order: 2;
     display: none;
+}
+
+.selected-cardset {
+    background-color: lightgray;
 }
 
 .side-bar {
