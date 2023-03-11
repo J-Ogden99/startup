@@ -1,3 +1,39 @@
+class FlashCardSide {
+    constructor(name, desc) {
+        this.name = name;
+        this.desc = desc;
+
+        this.element = document.createElement("div");
+        this.element.innerHTML =
+            `<h5 class="card-title">${name}</h5>\n` +
+            ` <p class="card-text">${desc}</p>`
+    }
+}
+class FlashCard {
+    constructor(frontName, frontDesc, backName, backDesc) {
+        this.front = new FlashCardSide(frontName, frontDesc);
+        this.front.element.classList.add("card-body");
+
+        this.back = new FlashCardSide(backName, backDesc);
+        this.back.element.classList.add("card-flipside");
+
+        this.card = document.createElement("div");
+        this.card.setAttribute("class", "card flashcard");
+        this.card.appendChild(this.front.element);
+        this.card.appendChild(this.back.element);
+    }
+
+    flip() {
+        let temp = this.back;
+        this.back = this.front;
+        this.front = temp;
+        this.front.element.classList.remove("card-flipside");
+        this.front.element.classList.add("card-body");
+        this.back.element.classList.add("card-flipside");
+        this.back.element.classList.remove("card-body");
+    }
+}
+
 class CardSet {
     constructor(setName, desc) {
         this.name = setName;
@@ -5,7 +41,7 @@ class CardSet {
         this.infoCard = document.createElement("div");
         this.infoCard.setAttribute("class", "card");
         this.infoCard.setAttribute("id",
-            `${setName.toLowerCase().replace(/[\s_]+/g, "-");}`);
+            `${setName.toLowerCase().replace(/[\s_]+/g, "-")}`);
         this.infoCard.innerHTML =
             '<div class="card-body">\n' +
             `  <h5 class="card-title">${setName}</h5>\n` +
@@ -23,8 +59,14 @@ class VerticalCardCarousel {
         this.container = document.querySelector(containerSelector);
         this.carousel = document.createElement("div");
         this.carousel.setAttribute("class", "carousel")
-        this.container.appendChile(this.carousel);
-        this.cards = this.container.querySelectorAll(cardSelector);
+        this.container.appendChild(this.carousel);
+        let db = new Database();
+        console.log(db);
+
+        for (let cardset of Object.values(db.CardSets)) {
+            this.carousel.appendChild(cardset.infoCard);
+        }
+        this.cards = this.carousel.querySelectorAll(cardSelector);
 
         // Set the scroll speed
         this.scrollSpeed = scrollSpeed;
@@ -66,31 +108,29 @@ class VerticalCardCarousel {
     }
 }
 
-// Usage example:
-const carousel = new VerticalCardCarousel(".carousel-container", ".card", 2);
-carousel.start();
-
 function login(name) {
     //Login Function
-    console.log(name)
-    $('#login-div').toggleClass('d-none', true)
-    $('#home-cards-div').toggleClass('d-none', false)
+    console.log(name);
+    $('#login-div').toggleClass('d-none', true);
+    $('#home-cards-div').toggleClass('d-none', false);
 }
 
-function createDatabase() {
-    let db = {}
-    db['CardSets'] = {}
-    for (let i = 0; i < 5; i++) {
-        name = `Set ${i}`;
-        desc = `Description of Set ${i}`;
-        db['CardSets'][`Set ${i}`] = new CardSet(name, desc);
+class Database {
+    constructor() {
+        this.CardSets = {};
+        let name, desc;
+        for (let i = 1; i < 5; i++) {
+            name = `Set ${i}`;
+            desc = `Description of Set ${i}`;
+            this.CardSets[`Set ${i}`] = new CardSet(name, desc);
+        }
     }
-    return db
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    let db = new createDatabase();
-
+    // Usage example:
+    const carousel = new VerticalCardCarousel(".vert-carousel-wrapper", ".card", 2);
+    // carousel.start();
 });
 
 

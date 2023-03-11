@@ -40,9 +40,23 @@ footer {
     justify-content: center;
 }
 
+.vert-carousel-wrapper {
+    max-height: 85vh;
+    overflow-y: clip;
+}
+
 .flashcard {
     flex: 0 1 600px;
     aspect-ratio: 5 / 3;
+}
+
+.card-body {
+    order: 1;
+}
+
+.card-flipside {
+    order: 2;
+    display: none;
 }
 
 .side-bar {
@@ -75,4 +89,26 @@ footer {
         display: none;
         position: fixed;
     }
+}
+
+/* ===== Scrollbar CSS ===== */
+/* Firefox */
+* {
+    scrollbar-width: auto;
+    scrollbar-color: var(--color-secondary-2-0) rgba(255, 255, 255, 0);
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+    width: 10px;
+}
+
+*::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0);
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: var(--color-secondary-2-0);
+    border-radius: 10px;
+    border: none;
 }

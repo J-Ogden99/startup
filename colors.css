@@ -8,6 +8,7 @@
 /* As hex codes */
 :root {
     --color-primary-0: #531DFF;
+    --color-secondary-2-0: #1A60FF;
     --color-primary-2-gradient: radial-gradient(ellipse, #C1AEFF  0, #9E80FF 70%, #5f30f5);
 }
 
