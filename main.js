@@ -48,7 +48,7 @@ class FlashCardSide {
     }
     changeToInput() {
         this.element.innerHTML =
-            `<h3 class="card-title side-title">Side</h3>\n` +
+            `<h3 class="side-title">Side</h3>\n` +
             `<h5 class="card-title" contenteditable="true">Name</h5>\n` +
             ` <p class="card-text" contenteditable="true">Description</p>`
         return this;
@@ -100,10 +100,10 @@ class FlashCardInput {
         this.card.appendChild(this.front.element);
         this.card.appendChild(this.back.element);
 
-        let saveButton = document.createElement("button");
-        saveButton.setAttribute("class", "btn btn-primary flashcard-save-button");
-        saveButton.innerText = "Save";
-        this.card.appendChild(saveButton);
+        this.saveButton = document.createElement("button");
+        this.saveButton.setAttribute("class", "btn btn-primary flashcard-save-button");
+        this.saveButton.innerText = "Save";
+        this.card.appendChild(this.saveButton);
     }
 }
 
@@ -161,6 +161,7 @@ class CardSet {
     }
 
     initAdd() {
+        console.log("In CardSet.initAdd()")
         let parent = this.infoCard.parentNode;
         let siblings = getSiblings(this.infoCard);
         for (let sibling of siblings) {
@@ -172,11 +173,25 @@ class CardSet {
 
         let cardInput = new FlashCardInput();
         createCardCont.appendChild(cardInput.card);
+        cardInput.saveButton.addEventListener("click", () => {
+            let card = new FlashCard(
+                this.name,
+                cardInput.front.element.querySelector('.card-title').innerText,
+                cardInput.front.element.querySelector('.card-text').innerText,
+                cardInput.back.element.querySelector('.card-title').innerText,
+                cardInput.back.element.querySelector('.card-text').innerText,
+            )
+            this.add(card);
+        })
+
     }
 
     add(card) {
+        console.log("in CardSet.add()")
         this.cards.push(card);
         this.cardIds.push(card.id);
+        console.log(this.cards);
+        this.initAdd();
     }
 }
 
