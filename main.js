@@ -2,7 +2,11 @@ let db;
 document.addEventListener('DOMContentLoaded', function() {
     db = new Database();
 
-    const carousel = new VerticalCardCarousel(".vert-carousel-wrapper", ".card", 2);
+    const carousel = new VerticalCardCarousel(
+        "#card-creation-carousel-wrapper",
+        ".card",
+        2
+    );
     // carousel.start();
 
 });
@@ -44,8 +48,9 @@ class FlashCardSide {
     }
     changeToInput() {
         this.element.innerHTML =
-            `<input type="text" class="card-title" placeholder="Name"></input>\n` +
-            `<input type="text" class="card-title" placeholder="Description"></input>`
+            `<h3 class="card-title side-title">Side</h3>\n` +
+            `<h5 class="card-title" contenteditable="true">Name</h5>\n` +
+            ` <p class="card-text" contenteditable="true">Description</p>`
         return this;
     }
 }
@@ -87,12 +92,18 @@ class FlashCardInput {
     constructor() {
         this.front = new FlashCardSide("", "").changeToInput();
         this.back = new FlashCardSide("", "").changeToInput();
-        this.front.element.style.borderBottom = "1px black";
+        this.front.element.querySelector('.side-title').innerText = "Front Side";
+        this.back.element.querySelector('.side-title').innerText = "Back Side";
 
         this.card = document.createElement("div");
         this.card.setAttribute("class", "card flashcard");
         this.card.appendChild(this.front.element);
         this.card.appendChild(this.back.element);
+
+        let saveButton = document.createElement("button");
+        saveButton.setAttribute("class", "btn btn-primary flashcard-save-button");
+        saveButton.innerText = "Save";
+        this.card.appendChild(saveButton);
     }
 }
 
@@ -126,8 +137,10 @@ class CardSet {
             this.edit();
         });
 
-        this.infoCard.querySelector('.add-to-set-btn').addEventListener('click', () => {
+        this.infoCard.querySelector('.add-to-set-btn').addEventListener('click', (event) => {
+            event.stopPropagation();
             this.initAdd();
+
         });
     }
 
@@ -149,9 +162,12 @@ class CardSet {
 
     initAdd() {
         let parent = this.infoCard.parentNode;
-        parentNode.querySelector('.cardset-info').classList.remove('selected-cardset');
+        let siblings = getSiblings(this.infoCard);
+        for (let sibling of siblings) {
+            sibling.classList.remove('selected-cardset');
+        }
         this.infoCard.classList.add('selected-cardset');
-        let createCardCont = document.getElementById("card-creation");
+        let createCardCont = document.querySelector(".card-view-wrapper");
         createCardCont.innerHTML = '';
 
         let cardInput = new FlashCardInput();
@@ -170,14 +186,19 @@ class VerticalCardCarousel {
         this.container = document.querySelector(containerSelector);
         this.carousel = document.createElement("div");
         this.carousel.setAttribute("class", "carousel")
-        this.container.appendChild(this.carousel);
+        // this.container.appendChild(this.carousel);
 
         console.log(db);
 
         for (let cardset of Object.values(db.CardSets)) {
-            this.carousel.appendChild(cardset.infoCard);
+            // this.carousel.appendChild(cardset.infoCard);
+            this.container.appendChild(cardset.infoCard);
         }
-        this.cards = this.carousel.querySelectorAll(cardSelector);
+        this.cards = this.container.querySelectorAll(cardSelector);
+        console.log(this.cards);
+        // this.cards.addEventListener('click', () => {
+        //     console.log('click');
+        // })
 
         // Set the scroll speed
         this.scrollSpeed = scrollSpeed;
@@ -189,18 +210,19 @@ class VerticalCardCarousel {
         this.intervalId = null;
         this.intervalDelay = 20; // Delay between each animation frame (in milliseconds)
 
-        this.carousel.addEventListener('click', function(event) {
-            console.log(event.target)
-            if (event.target.classList.contains('btn')) {
-                let event = new MouseEvent('click', {
-                    bubbles: true,
-                    cancelable: true,
-                    view: window
-                });
-
-                event.target.dispatchEvent(event);
-            }
-        })
+        // this.container.addEventListener('click', function(event) {
+        //     console.log(event.target)
+        //     event.stopPropagation();
+        //     if (event.target.classList.contains('btn')) {
+        //         let event = new MouseEvent('click', {
+        //             bubbles: true,
+        //             cancelable: true,
+        //             view: window
+        //         });
+        //
+        //         event.target.dispatchEvent(event);
+        //     }
+        // })
     }
 
     start() {
