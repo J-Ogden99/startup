@@ -156,3 +156,12 @@ button {
 *[contenteditable="true"]:focus {
     outline: 2px solid blue;
 }
+
+/*Hiding temporarily unnecessary elements*/
+a[href="learn.html"] {
+    display:none
+}
+
+a[href="review.html"] {
+    display:none
+}

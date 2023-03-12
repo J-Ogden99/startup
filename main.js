@@ -153,7 +153,30 @@ class CardSet {
     }
 
     learn() {
-        return;
+        this.select();
+        let cardCont = document.querySelector(".card-view-wrapper");
+        cardCont.innerHTML = '';
+        if (this.cards.length === 0) {
+            alert("This set is empty. Please add cards.");
+            return;
+        }
+        // let cardCarousel = new bootstrap.Carousel("#learn-carousel");
+
+        for (let card of [this.cards[0]]) {
+            let cardCopy = Object.assign({}, card);
+            cardCopy.card.innerHTML +=
+                '<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" ' +
+                'data-bs-slide="prev">\n' +
+                '    <span class="carousel-control-prev-icon" aria-hidden="false"></span>\n' +
+                '    <span class="visually-hidden">Previous</span>\n' +
+                '  </button>\n' +
+                '  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" ' +
+                'data-bs-slide="next">\n' +
+                '    <span class="carousel-control-next-icon" aria-hidden="false"></span>\n' +
+                '    <span class="visually-hidden">Next</span>\n' +
+                '  </button>' // Buttons need to be made dark
+            cardCont.appendChild(cardCopy.card);
+        }
     }
 
     edit() {
@@ -162,12 +185,7 @@ class CardSet {
 
     initAdd() {
         console.log("In CardSet.initAdd()")
-        let parent = this.infoCard.parentNode;
-        let siblings = getSiblings(this.infoCard);
-        for (let sibling of siblings) {
-            sibling.classList.remove('selected-cardset');
-        }
-        this.infoCard.classList.add('selected-cardset');
+        this.select();
         let createCardCont = document.querySelector(".card-view-wrapper");
         createCardCont.innerHTML = '';
 
@@ -184,6 +202,14 @@ class CardSet {
             this.add(card);
         })
 
+    }
+
+    select() {
+        let siblings = getSiblings(this.infoCard);
+        for (let sibling of siblings) {
+            sibling.classList.remove('selected-cardset');
+        }
+        this.infoCard.classList.add('selected-cardset');
     }
 
     add(card) {
