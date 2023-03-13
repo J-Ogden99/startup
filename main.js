@@ -160,23 +160,29 @@ class CardSet {
             alert("This set is empty. Please add cards.");
             return;
         }
-        // let cardCarousel = new bootstrap.Carousel("#learn-carousel");
+        let cardCarousel = new HorizontalCarousel("learn-carousel");
 
-        for (let card of [this.cards[0]]) {
+        let i = 0;
+        for (let card of this.cards) {
             let cardCopy = Object.assign({}, card);
-            cardCopy.card.innerHTML +=
-                '<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" ' +
-                'data-bs-slide="prev">\n' +
-                '    <span class="carousel-control-prev-icon" aria-hidden="false"></span>\n' +
-                '    <span class="visually-hidden">Previous</span>\n' +
-                '  </button>\n' +
-                '  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" ' +
-                'data-bs-slide="next">\n' +
-                '    <span class="carousel-control-next-icon" aria-hidden="false"></span>\n' +
-                '    <span class="visually-hidden">Next</span>\n' +
-                '  </button>' // Buttons need to be made dark
-            cardCont.appendChild(cardCopy.card);
+            cardCopy.card.classList.add('carousel-item')
+            if (i===0)
+                cardCopy.card.classList.add('active');
+            // cardCopy.card.innerHTML +=
+            //     '<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" ' +
+            //     'data-bs-slide="prev">\n' +
+            //     '    <span class="carousel-control-prev-icon" aria-hidden="false"></span>\n' +
+            //     '    <span class="visually-hidden">Previous</span>\n' +
+            //     '  </button>\n' +
+            //     '  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" ' +
+            //     'data-bs-slide="next">\n' +
+            //     '    <span class="carousel-control-next-icon" aria-hidden="false"></span>\n' +
+            //     '    <span class="visually-hidden">Next</span>\n' +
+            //     '  </button>' // Buttons need to be made dark
+            cardCarousel.querySelector('.carousel-inner').appendChild(cardCopy.card);
+            i++;
         }
+        cardCont.appendChild(cardCarousel);
     }
 
     edit() {
@@ -295,6 +301,26 @@ class VerticalCardCarousel {
     }
 }
 
+function HorizontalCarousel(id, dark = true) {
+    let carousel = document.createElement('div');
+    carousel.setAttribute('class', 'carousel slide flashcard');
+    carousel.setAttribute('id', id);
+    carousel.setAttribute('data-bs-interval', false);
+    if (dark)
+        carousel.classList.add('carousel-dark');
+    carousel.innerHTML =
+        "<div class=\"carousel-inner\">\n" +
+        "</div>\n" +
+        `  <button class=\"carousel-control-prev\" type=\"button\" data-bs-target=\"#${id}\" data-bs-slide=\"prev\">\n` +
+        "    <span class=\"carousel-control-prev-icon\" aria-hidden=\"true\"></span>\n" +
+        "    <span class=\"visually-hidden\">Previous</span>\n" +
+        "  </button>\n" +
+        `  <button class=\"carousel-control-next\" type=\"button\" data-bs-target=\"#${id}\" data-bs-slide=\"next\">\n` +
+        "    <span class=\"carousel-control-next-icon\" aria-hidden=\"true\"></span>\n" +
+        "    <span class=\"visually-hidden\">Next</span>\n" +
+        "  </button>"
+    return carousel
+}
 function login(name) {
     //Login Function
     console.log(name);
