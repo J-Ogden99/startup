@@ -84,4 +84,15 @@ flashed at a quick rate than if we were trying to look at it in the context of a
   button, because using my trackpad was getting annoying, so I had to learn about the "keydown" event, which has a 
   "code" attribute that allows a conditional to be made that triggers certain events based on keys, which can be mapped
   in an Object.
+  
 - I should also refer back to the simon code to learn how to work with Audio files in JavaScript
+
+- node init -y
+
+- npm install [package]
+
+- app.use(express.json());
+
+- const something = express.router();
+
+- something.get('url', (_req, res) => {})
