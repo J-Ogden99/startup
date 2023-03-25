@@ -96,3 +96,9 @@ flashed at a quick rate than if we were trying to look at it in the context of a
 - const something = express.router();
 
 - something.get('url', (_req, res) => {})
+
+- mongodb uses JSON objects as entries in the database
+
+- I need to restart pm2 whenever I update environment variables in the production environment:
+  -pm2 restart all --update-env
+  -pm2 save
