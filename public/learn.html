@@ -7,7 +7,6 @@
     <title>Study Buddy Card Creation</title>
     <link rel="stylesheet" href="main.css">
     <link rel="stylesheet" href="colors.css">
-    <link rel="stylesheet" href="review.css">
     <link
             href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
             rel="stylesheet"
@@ -18,8 +17,8 @@
 <body>
 <header class="container-fluid">
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg container-fluid navbar-dark color-primary-0">
-        <a class="navbar-brand" href="#">Study Buddy</a>
+    <nav class="navbar navbar-expand-lg  navbar-dark color-primary-0">
+        <a class="navbar-brand" href="index.html">Study Buddy</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -32,17 +31,17 @@
                     <a class="nav-link" href="card_creation.html">Create</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="learn.html">Learn</a>
+                    <a class="nav-link active" href="learn.html">Learn</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="review.html">Review</a>
+                    <a class="nav-link" href="review.html">Review</a>
                 </li>
             </ul>
         </div>
     </nav>
 </header>
 
-<main id="review-main" class="container-fluid text-center color-primary-2-gradient">
+<main id="learn-main" class="container-fluid text-center">
     <div class="container-fluid card-view-wrapper">
         <div class="card flashcard">
             <div class="card-body">
@@ -55,17 +54,7 @@
             </div>
         </div>
     </div>
-    <div class="container-fluid side-bar bg-light">
-        <h5>Set Review Frequency</h5>
-        <button class="btn btn-light rounded-circle active">1</button>
-        <button class="btn btn-light rounded-circle">2</button>
-        <button class="btn btn-light rounded-circle active">3</button>
-        <button class="btn btn-light rounded-circle">4</button>
-        <button class="btn btn-light rounded-circle active">5</button>
-        <button class="btn btn-light rounded-circle">6</button>
-    </div>
 </main>
-
 <footer class="bg-dark text-dark text-muted">
     <div class="container-fluid">
         <span class="text-reset">Author: Josh Ogden</span>
