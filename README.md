@@ -87,7 +87,7 @@ flashed at a quick rate than if we were trying to look at it in the context of a
   
 - I should also refer back to the simon code to learn how to work with Audio files in JavaScript
 
-- node init -y
+- npm init -y
 
 - npm install [package]
 
