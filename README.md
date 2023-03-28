@@ -102,3 +102,7 @@ flashed at a quick rate than if we were trying to look at it in the context of a
 - I need to restart pm2 whenever I update environment variables in the production environment:
   -pm2 restart all --update-env
   -pm2 save
+  
+- We hash passwords before storing, and then every time we log in we has their input and compare
+
+- Authentification token is stored in their cookies, from which we find it again when entering other parts of the app.
