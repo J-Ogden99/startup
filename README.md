@@ -106,3 +106,5 @@ flashed at a quick rate than if we were trying to look at it in the context of a
 - We hash passwords before storing, and then every time we log in we has their input and compare
 
 - Authentification token is stored in their cookies, from which we find it again when entering other parts of the app.
+
+- Websocket allows a peer-to-peer connection with the server rather than for the client to constantly be checking the server for updates.
