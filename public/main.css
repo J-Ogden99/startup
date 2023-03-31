@@ -35,6 +35,8 @@ button {
     position: relative;
     z-index: 0;
     pointer-events: auto;
+    margin-left: 2px !important;
+    margin-right: 2px !important;
 }
 
 .carousel {
@@ -66,12 +68,24 @@ button {
     aspect-ratio: 5 / 3 !important;
     display: flex;
     flex-direction: column;
-    align-content: center;
+    align-content: space-around;
     justify-content: space-around;
 }
 
+.flashcard-inner {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-content: space-around;
+    justify-content: space-around;
+}
+
+.flashcard-piece {
+    margin: auto;
+}
+
 .card-body {
-    order: 1;
+    /* order: 1; */
 }
 
 .card-title {
@@ -85,7 +99,7 @@ button {
 }
 
 .card-flipside {
-    order: 2;
+    /* order: 2; */
     display: none;
 }
 

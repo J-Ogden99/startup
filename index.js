@@ -1,4 +1,9 @@
 const express = require('express');
+const { MongoClient } = require('mongodb');
+const bcrypt = require('bcrypt');
+const uuid = require('uuid');
+const cookieParser = require('cookieparser');
+
 const app = express();
 
 // The service port. In production the front-end code is statically hosted by the service on the same port.
@@ -62,4 +67,26 @@ function postCard(info) {
 
 function postCardSet(info) {
 
+}
+
+
+//User Authentication
+
+app.post('/auth/create', async (req, res) => {
+    if (await getUser(req.body))
+})
+
+
+async function createUser(email, password) {
+  // Hash the password before we insert it into the database
+  const passwordHash = await bcrypt.hash(password, 10);
+
+  const user = {
+    email: email,
+    password: passwordHash,
+    token: uuid.v4(),
+  };
+  await collection.insertOne(user);
+
+  return user;
 }

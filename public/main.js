@@ -37,6 +37,7 @@ class FlashCardSide {
         this.desc = desc;
 
         this.element = document.createElement("div");
+        this.element.setAttribute('class', 'flashcard-piece');
         this.element.innerHTML =
             `<h5 class="card-title">${name}</h5>\n` +
             ` <p class="card-text">${desc}</p>`
@@ -57,6 +58,11 @@ class FlashCardSide {
 class FlashCard {
     constructor(cardSetName, frontName, frontDesc, backName, backDesc) {
         this.cardset = db.CardSets[cardSetName];
+        this.frontName = frontName;
+        this.frontDesc = frontDesc;
+        this.backName = backName;
+        this.backDesc = backDesc;
+
         this.front = new FlashCardSide(frontName, frontDesc);
         this.front.element.classList.add("card-body");
 
@@ -65,8 +71,16 @@ class FlashCard {
 
         this.card = document.createElement("div");
         this.card.setAttribute("class", "card flashcard");
-        this.card.appendChild(this.front.element);
-        this.card.appendChild(this.back.element);
+
+        this.inner = document.createElement("div");
+        this.inner.setAttribute("class", "flashcard-inner");
+        this.card.appendChild(this.inner);
+
+        this.inner.appendChild(this.front.element);
+        this.inner.appendChild(this.back.element);
+        this.card.addEventListener('click', () => {
+            this.flip();
+        });
     }
 
     createId() {
@@ -89,21 +103,29 @@ class FlashCard {
 }
 
 class FlashCardInput {
-    constructor() {
-        this.front = new FlashCardSide("", "").changeToInput();
-        this.back = new FlashCardSide("", "").changeToInput();
+    constructor(frontName = "", frontDesc = "", backName = "", backDesc = "") {
+        this.front = new FlashCardSide(frontName, frontDesc).changeToInput();
+        this.back = new FlashCardSide(backName, backDesc).changeToInput();
         this.front.element.querySelector('.side-title').innerText = "Front Side";
         this.back.element.querySelector('.side-title').innerText = "Back Side";
 
         this.card = document.createElement("div");
         this.card.setAttribute("class", "card flashcard");
-        this.card.appendChild(this.front.element);
-        this.card.appendChild(this.back.element);
+
+        this.inner = document.createElement("div");
+        this.inner.setAttribute("class", "flashcard-inner");
+        this.card.appendChild(this.inner);
+
+        this.inner.appendChild(this.front.element);
+        this.inner.appendChild(this.back.element);
+
+        this.buttons = document.createElement('div');
+        this.inner.appendChild(this.buttons);
 
         this.saveButton = document.createElement("button");
         this.saveButton.setAttribute("class", "btn btn-primary flashcard-save-button");
         this.saveButton.innerText = "Save";
-        this.card.appendChild(this.saveButton);
+        this.buttons.appendChild(this.saveButton);
     }
 }
 
@@ -165,20 +187,10 @@ class CardSet {
         let i = 0;
         for (let card of this.cards) {
             let cardCopy = Object.assign({}, card);
-            cardCopy.card.classList.add('carousel-item')
+            console.log(cardCopy);
+            cardCopy.card.classList.add('carousel-item');
             if (i===0)
                 cardCopy.card.classList.add('active');
-            // cardCopy.card.innerHTML +=
-            //     '<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" ' +
-            //     'data-bs-slide="prev">\n' +
-            //     '    <span class="carousel-control-prev-icon" aria-hidden="false"></span>\n' +
-            //     '    <span class="visually-hidden">Previous</span>\n' +
-            //     '  </button>\n' +
-            //     '  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" ' +
-            //     'data-bs-slide="next">\n' +
-            //     '    <span class="carousel-control-next-icon" aria-hidden="false"></span>\n' +
-            //     '    <span class="visually-hidden">Next</span>\n' +
-            //     '  </button>' // Buttons need to be made dark
             cardCarousel.querySelector('.carousel-inner').appendChild(cardCopy.card);
             i++;
         }
@@ -186,7 +198,44 @@ class CardSet {
     }
 
     edit() {
+        this.select();
+        let cardCont = document.querySelector(".card-view-wrapper");
+        cardCont.innerHTML = '';
+        if (this.cards.length === 0) {
+            alert("This set is empty. Please add cards.");
+            return;
+        }
+        let cardCarousel = new HorizontalCarousel("learn-carousel");
 
+        let i = 0;
+        for (let card of this.cards) {
+            // let cardCopy = Object.assign({}, card);
+            let cardCopy = new FlashCardInput(
+                card.frontName,
+                card.frontDesc,
+                card.backName,
+                card.backDesc
+            )
+
+            console.log(cardCopy);
+            cardCopy.card.classList.add('carousel-item');
+            cardCopy.card.appendChild
+
+            let deleteButton = document.createElement("button");
+            deleteButton.setAttribute("class", "btn btn-danger flashcard-save-button");
+            deleteButton.innerText = "Delete";
+            deleteButton.addEventListener('click', () => {
+                this.delete(card.id);
+            })
+
+            cardCopy.buttons.appendChild(deleteButton);
+
+            if (i===0)
+                cardCopy.card.classList.add('active');
+            cardCarousel.querySelector('.carousel-inner').appendChild(cardCopy.card);
+            i++;
+        }
+        cardCont.appendChild(cardCarousel);
     }
 
     initAdd() {
