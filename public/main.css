@@ -109,6 +109,10 @@ button {
     max-width: 10rem;
     margin: 0.5rem auto;
 }
+
+#loginControls {
+    max-width: 35rem;
+}
 .selected-cardset {
     background-color: darkgray !important;
 }

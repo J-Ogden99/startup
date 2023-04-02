@@ -23,6 +23,52 @@ app.use(express.static('public'));
 var apiRouter = express.Router();
 app.use(`/api`, apiRouter);
 
+// CreateAuth token for a new user
+apiRouter.post('/auth/create', async (req, res) => {
+    if (await DB.getUser(req.body.email)) {
+        res.status(409).send({ msg: 'Existing user' });
+    } else {
+        const user = await DB.createUser(req.body.email, req.body.password);
+    
+        // Set the cookie
+        setAuthCookie(res, user.token);
+    
+        res.send({
+            id: user._id,
+        });
+    }
+});
+  
+  // GetAuth token for the provided credentials
+apiRouter.post('/auth/login', async (req, res) => {
+    const user = await DB.getUser(req.body.email);
+    if (user) {
+        if (await bcrypt.compare(req.body.password, user.password)) {
+            setAuthCookie(res, user.token);
+            res.send({ id: user._id });
+            return;
+        }
+    }
+    res.status(401).send({ msg: 'Unauthorized' });
+});
+  
+  // DeleteAuth token if stored in cookie
+apiRouter.delete('/auth/logout', (_req, res) => {
+    res.clearCookie(authCookieName);
+    res.status(204).end();
+});
+  
+// GetUser returns information about a user
+apiRouter.get('/user/:username', async (req, res) => {
+    const user = await DB.getUser(req.params.username);
+    if (user) {
+      const token = req?.cookies.token;
+      res.send({ username: user.username, authenticated: token === user.token });
+      return;
+    }
+    res.status(404).send({ msg: 'Unknown' });
+});
+
 var secureApiRouter = express.Router();
 apiRouter.use(secureApiRouter);
 
@@ -56,6 +102,9 @@ secureApiRouter.post('/card', async (req, res) => {
 
 // Add a new card set
 secureApiRouter.post('/cardset', async (req, res) => {
+    if (await DB.getCardsets(req.body.setName)) {
+        res.status(409).send({ msg: 'Existing cardset' });
+    }
     const result = await DB.addCardset(req.body);
     res.send(result);
 });

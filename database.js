@@ -17,8 +17,8 @@ const userCollection = client.db('startup').collection('user');
 const cardCollection = client.db('startup').collection('card');
 const cardsetCollection = client.db('startup').collection('cardset');
 
-function getUser(email) {
-return userCollection.findOne({ email: email });
+function getUser(username) {
+return userCollection.findOne({ username: username });
 }
 
 function getUserByToken(token) {
@@ -87,8 +87,11 @@ function addCardset(setName) {
     return cardsetCollection.insertOne(cardSet);
 }
 
-function getCardsets() {
-    return cardsetCollection.find();
+function getCardsets(req = "all") {
+    if (req === "all")
+        return cardsetCollection.find();
+    const name = req.setName;
+    return cardsetCollection.findOne({ name: name })
 }
 
 function updateCardset(req) {

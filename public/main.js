@@ -1,16 +1,3 @@
-let db;
-document.addEventListener('DOMContentLoaded', function() {
-    db = new Database();
-
-    const carousel = new VerticalCardCarousel(
-        "#card-creation-carousel-wrapper",
-        ".card",
-        2
-    );
-    // carousel.start();
-
-});
-
 function getSiblings (element) {
     // for collecting siblings
     let siblings = [];
@@ -130,8 +117,8 @@ class FlashCardInput {
 }
 
 class CardSet {
-    constructor(setName, desc) {
-        this.id = this.createId();
+    constructor(setName, desc, id) {
+        this.id = id;
         this.name = setName;
         this.desc = desc;
         this.infoCard = document.createElement("div");
@@ -166,18 +153,21 @@ class CardSet {
         });
     }
 
-    createId() {
-        let id = Math.floor(Math.random() * 10000);
-        // while (db.CardSetIds.includes(id)) {
-        //     id = Math.floor(Math.random() * 10000);
-        // }
-        return id;
-    }
-
-    learn() {
+    async learn() {
         this.select();
         let cardCont = document.querySelector(".card-view-wrapper");
         cardCont.innerHTML = '';
+
+        const req = {
+            setName: this.name
+        }
+
+        const response = await fetch('/api/cards', {
+            method: 'GET',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify(req),
+        });
+        console.log(response);
         if (this.cards.length === 0) {
             alert("This set is empty. Please add cards.");
             return;
@@ -246,7 +236,7 @@ class CardSet {
 
         let cardInput = new FlashCardInput();
         createCardCont.appendChild(cardInput.card);
-        cardInput.saveButton.addEventListener("click", () => {
+        cardInput.saveButton.addEventListener("click", async () => {
             let card = new FlashCard(
                 this.name,
                 cardInput.front.element.querySelector('.card-title').innerText,
@@ -254,7 +244,8 @@ class CardSet {
                 cardInput.back.element.querySelector('.card-title').innerText,
                 cardInput.back.element.querySelector('.card-text').innerText,
             )
-            this.add(card);
+            const response = await this.add(card);
+            console.log(response);
         })
 
     }
@@ -267,12 +258,13 @@ class CardSet {
         this.infoCard.classList.add('selected-cardset');
     }
 
-    add(card) {
-        console.log("in CardSet.add()")
-        this.cards.push(card);
-        this.cardIds.push(card.id);
-        console.log(this.cards);
-        this.initAdd();
+    async add(card) {
+        const response = await fetch('/api/card', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify(card),
+          });
+        return response;
     }
 }
 
