@@ -39,13 +39,6 @@ async function createUser(email, password) {
     return user;
 }
 
-  //User Authentication
-
-app.post('/auth/create', async (req, res) => {
-    if (await getUser(req.body));
-})
-
-
 async function createUser(email, password) {
   // Hash the password before we insert it into the database
   const passwordHash = await bcrypt.hash(password, 10);
@@ -67,7 +60,7 @@ function getCards(setName) {
     return cardCollection.find({ setName: setName });
 }
 
-async function updateCard(req); {
+async function updateCard(req) {
     const id = req.id;
     return db.cardCollection.updateOne(
         { _id: id },
