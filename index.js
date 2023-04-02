@@ -1,10 +1,11 @@
-const express = require('express');
-const { MongoClient } = require('mongodb');
+const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
-const uuid = require('uuid');
-const cookieParser = require('cookieparser');
-
+const express = require('express');
 const app = express();
+const DB = require('./database.js');
+// const { PeerProxy } = require('./peerProxy.js');
+
+const authCookieName = 'token';
 
 // The service port. In production the front-end code is statically hosted by the service on the same port.
 const port = process.argv.length > 2 ? process.argv[2] : 4000;
@@ -12,34 +13,74 @@ const port = process.argv.length > 2 ? process.argv[2] : 4000;
 // JSON body parsing using built-in middleware
 app.use(express.json());
 
-// Serve up the front-end static content hosting
+// Use the cookie parser middleware for tracking authentication tokens
+app.use(cookieParser());
+
+// Serve up the applications static content
 app.use(express.static('public'));
 
 // Router for service endpoints
-const apiRouter = express.Router();
-app.use('/api', apiRouter);
+var apiRouter = express.Router();
+app.use(`/api`, apiRouter);
+
+var secureApiRouter = express.Router();
+apiRouter.use(secureApiRouter);
+
+secureApiRouter.use(async (req, res, next) => {
+    const authToken = req.cookies[authCookieName];
+    const user = await DB.getUserByToken(authToken);
+    if (user) {
+      next();
+    } else {
+      res.status(401).send({ msg: 'Unauthorized' });
+    }
+});
 
 // Get cards for a set
-apiRouter.get('/cards', (req, res) => {
-    let cardSet = getCards(req.body.setName);
+secureApiRouter.get('/cards', async (req, res) => {
+    const cardSet = await DB.getCards(req.body.setName);
     res.send(cardSet);
 });
 
 // Get card sets
-apiRouter.get('/cardsets', (_req, res) => {
-    let sets = getCardSets();
+secureApiRouter.get('/cardsets', async (_req, res) => {
+    const sets = await DB.getCardsets();
     res.send(sets);
 });
 
 // Add a new card
-apiRouter.post('/card', (req, res) => {
-    let result = postCard(req.body);
+secureApiRouter.post('/card', async (req, res) => {
+    const result = await DB.addCard(req.body);
     res.send(result);
 });
 
 // Add a new card set
-apiRouter.post('/cardset', (req, res) => {
-    let result = postCardSet(req.body);
+secureApiRouter.post('/cardset', async (req, res) => {
+    const result = await DB.addCardset(req.body);
+    res.send(result);
+});
+
+// Edit a card
+secureApiRouter.put('/card', async (req, res) => {
+    const result = await DB.updateCard(req.body);
+    res.send(result);
+});
+
+// Edit a card set
+secureApiRouter.put('/cardset', async (req, res) => {
+    const result = await DB.updateCardset(req.body);
+    res.send(result);
+});
+
+// Delete a card
+secureApiRouter.delete('/card', async (req, res) => {
+    const result = await DB.addCard(req.body);
+    res.send(result);
+});
+
+// Delete a card set
+secureApiRouter.delete('/cardset', async (req, res) => {
+    const result = await DB.deleteCardset(req.body);
     res.send(result);
 });
 
@@ -53,40 +94,3 @@ app.listen(port, () => {
     console.log(`Listening on port ${port}`);
 });
 
-function getCards(setName) {
-
-}
-
-function getCardSets(setName) {
-
-}
-
-function postCard(info) {
-
-}
-
-function postCardSet(info) {
-
-}
-
-
-//User Authentication
-
-app.post('/auth/create', async (req, res) => {
-    if (await getUser(req.body))
-})
-
-
-async function createUser(email, password) {
-  // Hash the password before we insert it into the database
-  const passwordHash = await bcrypt.hash(password, 10);
-
-  const user = {
-    email: email,
-    password: passwordHash,
-    token: uuid.v4(),
-  };
-  await collection.insertOne(user);
-
-  return user;
-}
