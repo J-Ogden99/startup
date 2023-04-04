@@ -8,7 +8,10 @@ const hostname = process.env.MONGOHOSTNAME;
 
 if (!userName) {
     throw Error('Database not configured. Set environment variables');
-  }
+    console.log(userName)
+    console.log(password)
+    console.log(hostname)
+}
   
 const url = `mongodb+srv://${userName}:${password}@${hostname}`;
 
@@ -17,39 +20,41 @@ const userCollection = client.db('startup').collection('user');
 const cardCollection = client.db('startup').collection('card');
 const cardsetCollection = client.db('startup').collection('cardset');
 
+
 function getUser(username) {
-return userCollection.findOne({ username: username });
+    return userCollection.findOne({ username: username });
 }
 
 function getUserByToken(token) {
-return userCollection.findOne({ token: token });
+    return userCollection.findOne({ token: token });
 }
 
-async function createUser(email, password) {
-    // Hash the password before we insert it into the database
-    const passwordHash = await bcrypt.hash(password, 10);
+// async function createUser(username, password) {
+//     // Hash the password before we insert it into the database
+//     const passwordHash = await bcrypt.hash(password, 10);
 
-    const user = {
-        email: email,
-        password: passwordHash,
-        token: uuid.v4(),
-    };
-    await userCollection.insertOne(user);
+//     const user = {
+//         username: username,
+//         password: passwordHash,
+//         token: uuid.v4(),
+//     };
+//     await userCollection.insertOne(user);
 
-    return user;
-}
+//     return user;
+// }
 
-async function createUser(email, password) {
+async function createUser(username, password) {
   // Hash the password before we insert it into the database
   const passwordHash = await bcrypt.hash(password, 10);
+  console.log(username);
 
   const user = {
-    email: email,
+    username: username,
     password: passwordHash,
     token: uuid.v4(),
   };
 
-  return collection.insertOne(user);
+  return userCollection.insertOne(user);
 }
 
 function addCard(req) {

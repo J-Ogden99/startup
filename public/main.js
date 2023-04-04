@@ -116,6 +116,30 @@ class FlashCardInput {
     }
 }
 
+class CardsetInput {
+    constructor(name = "", desc = "") {
+        this.front = new FlashCardSide(name, desc).changeToInput();
+        this.front.element.querySelector('.side-title').innerText = "New Cardset";
+
+        this.card = document.createElement("div");
+        this.card.setAttribute("class", "card flashcard");
+
+        this.inner = document.createElement("div");
+        this.inner.setAttribute("class", "flashcard-inner");
+        this.card.appendChild(this.inner);
+
+        this.inner.appendChild(this.front.element);
+
+        this.buttons = document.createElement('div');
+        this.inner.appendChild(this.buttons);
+
+        this.saveButton = document.createElement("button");
+        this.saveButton.setAttribute("class", "btn btn-primary flashcard-save-button");
+        this.saveButton.innerText = "Save";
+        this.buttons.appendChild(this.saveButton);
+    }
+}
+
 class CardSet {
     constructor(setName, desc, id) {
         this.id = id;
@@ -269,16 +293,16 @@ class CardSet {
 }
 
 class VerticalCardCarousel {
-    constructor(containerSelector, cardSelector, scrollSpeed) {
+    constructor(containerSelector, cardSelector, scrollSpeed, cardSets) {
         // Get references to the container and card elements
         this.container = document.querySelector(containerSelector);
         this.carousel = document.createElement("div");
         this.carousel.setAttribute("class", "carousel")
         // this.container.appendChild(this.carousel);
 
-        console.log(db);
+        console.log(cardSets);
 
-        for (let cardset of Object.values(db.CardSets)) {
+        for (let cardset of Object.values(cardSets)) {
             // this.carousel.appendChild(cardset.infoCard);
             this.container.appendChild(cardset.infoCard);
         }
@@ -383,5 +407,63 @@ class Database {
     }
 }
 
+async function getCardsets() {
+    const response = await fetch('/api/cardsets', {
+        method: 'GET',
+        headers: { 'content-type': 'application/json' },
+    });
+    console.log(response);
+    if (!response.ok) {
+        document.getElementById('card-creation-carousel-wrapper').innerHTML = "<p style='margin-top: 50%;'>No Cardsets Yet!</p>";
+        return;
+    }
+    let cardSets = [];
+    let name, desc;
+    for (let set of response.body) {
+        name = set.name;
+        desc = set.desc;
+        cardSets.push(new CardSet(name, desc))
+    }
 
+    const carousel = new VerticalCardCarousel(
+        "#card-creation-carousel-wrapper",
+        ".card",
+        2,
+        cardSets
+    );
 
+    return cardSets;
+}
+
+async function initAddCardset() {
+    const cardSets = await getCardsets();
+    let input = new CardsetInput();
+    let createCardCont = document.querySelector(".card-view-wrapper");
+    createCardCont.innerHTML = '';
+
+    createCardCont.appendChild(input.card);
+    input.saveButton.addEventListener("click", async () => {
+        let card = new FlashCard(
+            this.name,
+            input.front.element.querySelector('.card-title').innerText,
+            input.front.element.querySelector('.card-text').innerText,
+        )
+        let name = input.front.element.querySelector('.card-title').innerText;
+        let desc = input.front.element.querySelector('.card-text').innerText;
+        const response = await this.addCardset(name, desc);
+        console.log(response);
+    })
+}
+
+async function addCardset(name, desc) {
+    const response = await fetch('/api/cardset', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({setName: name, desc: desc})
+    });
+}
+
+function initRemoveCardset() {
+    sets = document.querySelectorAll(".cardset-info");
+    console.log(sets);
+}

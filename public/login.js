@@ -29,6 +29,7 @@
   async function loginOrCreate(endpoint) {
     const userName = document.querySelector('#userName')?.value;
     const password = document.querySelector('#userPassword')?.value;
+    console.log(userName);
     const response = await fetch(endpoint, {
       method: 'post',
       body: JSON.stringify({ username: userName, password: password }),
@@ -40,7 +41,7 @@
   
     if (response?.status === 200) {
       localStorage.setItem('userName', userName);
-      window.location.href = 'play.html';
+      window.location.href = 'card_creation.html';
     } else {
       const modalEl = document.querySelector('#msgModal');
       modalEl.querySelector('.modal-body').textContent = `⚠ Error: ${body.msg}`;
