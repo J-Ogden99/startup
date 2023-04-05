@@ -1,4 +1,4 @@
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
 const bcrypt = require('bcrypt');
 const uuid = require('uuid');
 
@@ -21,12 +21,15 @@ const cardCollection = client.db('startup').collection('card');
 const cardsetCollection = client.db('startup').collection('cardset');
 
 
-function getUser(username) {
-    return userCollection.findOne({ username: username });
+async function getUser(username) {
+    const cursor =  await userCollection.findOne({ username: username });
+    console.log(cursor);
+    return cursor;
 }
 
-function getUserByToken(token) {
-    return userCollection.findOne({ token: token });
+async function getUserByToken(token) {
+    const cursor =  await userCollection.findOne({ token: token });
+    return cursor;
 }
 
 // async function createUser(username, password) {
@@ -54,42 +57,48 @@ async function createUser(username, password) {
     token: uuid.v4(),
   };
 
-  return userCollection.insertOne(user);
+  const cursor = await userCollection.insertOne(user);
+  return cursor;
 }
 
-function addCard(req) {
-    return cardCollection.insertOne(req);
+async function addCard(req) {
+    const cursor = await cardCollection.insertOne(req);
+    return cursor;
 }
 
-function getCards(setName) {
-    return cardCollection.find({ setName: setName });
+async function getCards(setId) {
+    const cursor = cardCollection.find({ _setid: setId });
+    return cursor.toArray();
 }
 
 async function updateCard(req) {
     const id = req.id;
-    return db.cardCollection.updateOne(
+    const cursor = await cardCollection.updateOne(
         { _id: id },
         { $set: req }
-    )
+    );
+    return cursor;
 }
 
 function deleteCard(req) {
     const id = req.id;
-    return cardCollection.deleteOne({ _id: id })
+    return cardCollection.deleteOne({ _id: id }).toArray();
 }
 
-function addCardset(setName) {
+function addCardset(setName, desc) {
     const cardSet = {
-        'name': setName
+        'name': setName,
+        'desc': desc
     }
     return cardsetCollection.insertOne(cardSet);
 }
 
-function getCardsets(req = "all") {
+function getCardsets(req = "all", setName = "") {
     if (req === "all")
-        return cardsetCollection.find();
-    const name = req.setName;
-    return cardsetCollection.findOne({ name: name })
+        return cardsetCollection.find({}).toArray();
+    const name = setName;
+    const cursor = cardsetCollection.findOne({ name: name });
+    return cursor;
 }
 
 function updateCardset(req) {
@@ -97,16 +106,15 @@ function updateCardset(req) {
     return db.cardsetCollection.updateOne(
         { _id: id },
         { $set: req }
-    );
+    ).toArray();
 }
 
-async function deleteCardset(req) {
-    const id = req.id;
-    const setName = req.name;
-    const cardDel = await cardCollection.deleteMany({ setName: setName });
-    if (cardDel.acknowledged)
-        return cardsetCollection.deleteOne({ _id: id });
-    return cardDel;
+async function deleteCardset(id) {
+    const cardDel = await cardCollection.deleteMany({ _setid: ObjectId(id) })
+    const cursor = await cardsetCollection.deleteOne({ _id: ObjectId(id) });
+    // if (cardDel.acknowledged)
+    //     return cardsetCollection.deleteOne({ _id: id }).toArray();
+    return cursor;
 }
 
 

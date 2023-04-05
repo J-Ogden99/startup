@@ -43,12 +43,13 @@ class FlashCardSide {
     }
 }
 class FlashCard {
-    constructor(cardSetName, frontName, frontDesc, backName, backDesc) {
+    constructor(cardSetName, frontName, frontDesc, backName, backDesc, id) {
         this.cardset = db.CardSets[cardSetName];
         this.frontName = frontName;
         this.frontDesc = frontDesc;
         this.backName = backName;
         this.backDesc = backDesc;
+        this.id = id;
 
         this.front = new FlashCardSide(frontName, frontDesc);
         this.front.element.classList.add("card-body");
@@ -186,12 +187,23 @@ class CardSet {
             setName: this.name
         }
 
-        const response = await fetch('/api/cards', {
+        const response = await fetch(`/api/cards?setid=${this.id}`, {
             method: 'GET',
             headers: { 'content-type': 'application/json' },
-            body: JSON.stringify(req),
+            // body: JSON.stringify(req),
         });
-        console.log(response);
+        const data = await response.json();
+        console.log(data);
+        for (let card of data) {
+            this.cards.push(new FlashCard(
+                this.name,
+                card.frontName,
+                card.frontDesc,
+                card.backName,
+                card.backDesc,
+                card._id,
+            ));
+        }
         if (this.cards.length === 0) {
             alert("This set is empty. Please add cards.");
             return;
@@ -261,15 +273,17 @@ class CardSet {
         let cardInput = new FlashCardInput();
         createCardCont.appendChild(cardInput.card);
         cardInput.saveButton.addEventListener("click", async () => {
-            let card = new FlashCard(
-                this.name,
-                cardInput.front.element.querySelector('.card-title').innerText,
-                cardInput.front.element.querySelector('.card-text').innerText,
-                cardInput.back.element.querySelector('.card-title').innerText,
-                cardInput.back.element.querySelector('.card-text').innerText,
-            )
+            let card = {
+                setName: this.name,
+                frontName: cardInput.front.element.querySelector('.card-title').innerText,
+                frontDesc: cardInput.front.element.querySelector('.card-text').innerText,
+                backName: cardInput.back.element.querySelector('.card-title').innerText,
+                backDesc: cardInput.back.element.querySelector('.card-text').innerText,
+                _setid: this.id
+            }
             const response = await this.add(card);
-            console.log(response);
+            const data = await response.json();
+            console.log(data);
         })
 
     }
@@ -306,6 +320,8 @@ class VerticalCardCarousel {
             // this.carousel.appendChild(cardset.infoCard);
             this.container.appendChild(cardset.infoCard);
         }
+        if (cardSets.length == 0)
+            this.container.innerHTML = "<p style='margin-top: 50%;'>No Cardsets Yet!</p>";
         this.cards = this.container.querySelectorAll(cardSelector);
         console.log(this.cards);
         // this.cards.addEventListener('click', () => {
@@ -408,21 +424,25 @@ class Database {
 }
 
 async function getCardsets() {
+    document.getElementById('card-creation-carousel-wrapper').innerHTML = '';
     const response = await fetch('/api/cardsets', {
         method: 'GET',
         headers: { 'content-type': 'application/json' },
     });
-    console.log(response);
-    if (!response.ok) {
+    const data = await response.json();
+    if (!data) {
         document.getElementById('card-creation-carousel-wrapper').innerHTML = "<p style='margin-top: 50%;'>No Cardsets Yet!</p>";
-        return;
+        return [];
     }
+    
+    
     let cardSets = [];
-    let name, desc;
-    for (let set of response.body) {
+    let name, desc, id;
+    for (let set of data) {
         name = set.name;
         desc = set.desc;
-        cardSets.push(new CardSet(name, desc))
+        id = set._id;
+        cardSets.push(new CardSet(name, desc, id))
     }
 
     const carousel = new VerticalCardCarousel(
@@ -450,8 +470,8 @@ async function initAddCardset() {
         )
         let name = input.front.element.querySelector('.card-title').innerText;
         let desc = input.front.element.querySelector('.card-text').innerText;
-        const response = await this.addCardset(name, desc);
-        console.log(response);
+        const response = await addCardset(name, desc);
+        initAddCardset();
     })
 }
 
@@ -459,11 +479,40 @@ async function addCardset(name, desc) {
     const response = await fetch('/api/cardset', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({setName: name, desc: desc})
+        body: JSON.stringify({ setName: name, desc: desc })
     });
+    await getCardsets();
+    const data = await response.json();
+    return data;
 }
 
-function initRemoveCardset() {
-    sets = document.querySelectorAll(".cardset-info");
-    console.log(sets);
+async function initRemoveCardset() {
+    // let sets = document.querySelectorAll(".cardset-info");
+    document.querySelector('.card-view-wrapper').innerHTML = "";
+    let sets = await getCardsets();
+    let btn;
+    for (let set of sets) {
+        btn = document.createElement('button');
+        btn.setAttribute('class', 'btn btn-danger remove-from-set-btn');
+        btn.setAttribute('set-id', set.id);
+        btn.innerText = "Delete";
+        btn.addEventListener("click", async () => {
+            const id = btn.getAttribute('set-id');
+            const response = await removeCardset(id);
+            await getCardsets();
+            initRemoveCardset();
+        });
+        set.infoCard.querySelector('.card-body').appendChild(btn);
+    }
+}
+
+async function removeCardset(id) {
+    const response = await fetch('/api/cardset', {
+        method: 'DELETE',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: id })
+    });
+
+    const data = response.json();
+    return data;
 }

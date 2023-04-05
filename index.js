@@ -28,7 +28,7 @@ apiRouter.post('/auth/create', async (req, res) => {
     if (await DB.getUser(req.body.username)) {
         res.status(409).send({ msg: 'Existing user' });
     } else {
-        const user = await DB.createUser(req.body.email, req.body.password);
+        const user = await DB.createUser(req.body.username, req.body.password);
     
         // Set the cookie
         setAuthCookie(res, user.token);
@@ -41,7 +41,7 @@ apiRouter.post('/auth/create', async (req, res) => {
   
   // GetAuth token for the provided credentials
 apiRouter.post('/auth/login', async (req, res) => {
-    const user = await DB.getUser(req.body.email);
+    const user = await DB.getUser(req.body.username);
     if (user) {
         if (await bcrypt.compare(req.body.password, user.password)) {
             setAuthCookie(res, user.token);
@@ -84,7 +84,7 @@ secureApiRouter.use(async (req, res, next) => {
 
 // Get cards for a set
 secureApiRouter.get('/cards', async (req, res) => {
-    const cardSet = await DB.getCards(req.body.setName);
+    const cardSet = await DB.getCards(req.query.setid);
     res.send(cardSet);
 });
 
@@ -105,7 +105,7 @@ secureApiRouter.post('/cardset', async (req, res) => {
     if (await DB.getCardsets(req.body.setName)) {
         res.status(409).send({ msg: 'Existing cardset' });
     }
-    const result = await DB.addCardset(req.body);
+    const result = await DB.addCardset(req.body.setName, req.body.desc);
     res.send(result);
 });
 
@@ -129,7 +129,7 @@ secureApiRouter.delete('/card', async (req, res) => {
 
 // Delete a card set
 secureApiRouter.delete('/cardset', async (req, res) => {
-    const result = await DB.deleteCardset(req.body);
+    const result = await DB.deleteCardset(req.body.id);
     res.send(result);
 });
 

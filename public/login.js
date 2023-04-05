@@ -9,7 +9,7 @@
     }
   
     if (authenticated) {
-      document.querySelector('#playerName').textContent = userName;
+      // document.querySelector('#playerName').textContent = userName; todo: display username somewhere
       setDisplay('loginControls', 'none');
       setDisplay('playControls', 'block');
     } else {
