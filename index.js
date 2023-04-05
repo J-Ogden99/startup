@@ -123,7 +123,7 @@ secureApiRouter.put('/cardset', async (req, res) => {
 
 // Delete a card
 secureApiRouter.delete('/card', async (req, res) => {
-    const result = await DB.addCard(req.body);
+    const result = await DB.deleteCard(req.body.id);
     res.send(result);
 });
 

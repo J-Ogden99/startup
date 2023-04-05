@@ -19,7 +19,7 @@ function getSiblings (element) {
 };
 
 class FlashCardSide {
-    constructor(name, desc) {
+    constructor(name = "Name", desc = "Description") {
         this.name = name;
         this.desc = desc;
 
@@ -37,8 +37,8 @@ class FlashCardSide {
     changeToInput() {
         this.element.innerHTML =
             `<h3 class="side-title">Side</h3>\n` +
-            `<h5 class="card-title" contenteditable="true">Name</h5>\n` +
-            ` <p class="card-text" contenteditable="true">Description</p>`
+            `<h5 class="card-title" contenteditable="true">${this.name}</h5>\n` +
+            ` <p class="card-text" contenteditable="true">${this.desc}</p>`
         return this;
     }
 }
@@ -91,11 +91,12 @@ class FlashCard {
 }
 
 class FlashCardInput {
-    constructor(frontName = "", frontDesc = "", backName = "", backDesc = "") {
+    constructor(frontName = "Name", frontDesc = "Description", backName = "Name", backDesc = "Description", id = "") {
         this.front = new FlashCardSide(frontName, frontDesc).changeToInput();
         this.back = new FlashCardSide(backName, backDesc).changeToInput();
         this.front.element.querySelector('.side-title').innerText = "Front Side";
         this.back.element.querySelector('.side-title').innerText = "Back Side";
+        this.id = id;
 
         this.card = document.createElement("div");
         this.card.setAttribute("class", "card flashcard");
@@ -178,6 +179,15 @@ class CardSet {
         });
     }
 
+    async getCards() {
+        const response = await fetch(`/api/cards?setid=${this.id}`, {
+            method: 'GET',
+            headers: { 'content-type': 'application/json' },
+            // body: JSON.stringify(req),
+        });
+        return response;
+    }
+
     async learn() {
         this.select();
         let cardCont = document.querySelector(".card-view-wrapper");
@@ -187,11 +197,7 @@ class CardSet {
             setName: this.name
         }
 
-        const response = await fetch(`/api/cards?setid=${this.id}`, {
-            method: 'GET',
-            headers: { 'content-type': 'application/json' },
-            // body: JSON.stringify(req),
-        });
+        const response = await this.getCards();
         const data = await response.json();
         console.log(data);
         for (let card of data) {
@@ -213,7 +219,6 @@ class CardSet {
         let i = 0;
         for (let card of this.cards) {
             let cardCopy = Object.assign({}, card);
-            console.log(cardCopy);
             cardCopy.card.classList.add('carousel-item');
             if (i===0)
                 cardCopy.card.classList.add('active');
@@ -223,8 +228,9 @@ class CardSet {
         cardCont.appendChild(cardCarousel);
     }
 
-    edit() {
+    async edit() {
         this.select();
+        await this.learn();
         let cardCont = document.querySelector(".card-view-wrapper");
         cardCont.innerHTML = '';
         if (this.cards.length === 0) {
@@ -240,18 +246,20 @@ class CardSet {
                 card.frontName,
                 card.frontDesc,
                 card.backName,
-                card.backDesc
+                card.backDesc,
+                card.id
             )
 
-            console.log(cardCopy);
             cardCopy.card.classList.add('carousel-item');
             cardCopy.card.appendChild
 
             let deleteButton = document.createElement("button");
             deleteButton.setAttribute("class", "btn btn-danger flashcard-save-button");
             deleteButton.innerText = "Delete";
-            deleteButton.addEventListener('click', () => {
-                this.delete(card.id);
+            deleteButton.addEventListener('click', async () => {
+                const data = await this.delete(card.id);
+                console.log(data);
+                this.edit();
             })
 
             cardCopy.buttons.appendChild(deleteButton);
@@ -281,6 +289,7 @@ class CardSet {
                 backDesc: cardInput.back.element.querySelector('.card-text').innerText,
                 _setid: this.id
             }
+            this.initAdd();
             const response = await this.add(card);
             const data = await response.json();
             console.log(data);
@@ -303,6 +312,17 @@ class CardSet {
             body: JSON.stringify(card),
           });
         return response;
+    }
+
+    async delete(id) {
+        const response = await fetch('/api/card', {
+            method: 'DELETE',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ id: id })
+        });
+    
+        const data = await response.json();
+        return data;
     }
 }
 
@@ -513,6 +533,6 @@ async function removeCardset(id) {
         body: JSON.stringify({ id: id })
     });
 
-    const data = response.json();
+    const data = await response.json();
     return data;
 }

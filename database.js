@@ -80,9 +80,9 @@ async function updateCard(req) {
     return cursor;
 }
 
-function deleteCard(req) {
-    const id = req.id;
-    return cardCollection.deleteOne({ _id: id }).toArray();
+function deleteCard(id) {
+    const cursor = cardCollection.deleteOne({ _id: ObjectId(id) })
+    return cursor;
 }
 
 function addCardset(setName, desc) {
