@@ -200,6 +200,7 @@ class CardSet {
         const response = await this.getCards();
         const data = await response.json();
         console.log(data);
+        this.cards = [];
         for (let card of data) {
             this.cards.push(new FlashCard(
                 this.name,
@@ -264,6 +265,22 @@ class CardSet {
 
             cardCopy.buttons.appendChild(deleteButton);
 
+            cardCopy.saveButton.addEventListener('click', async () => {
+                let attr = {
+                    setName: this.name,
+                    frontName: cardCopy.front.element.querySelector('.card-title').innerText,
+                    frontDesc: cardCopy.front.element.querySelector('.card-text').innerText,
+                    backName: cardCopy.back.element.querySelector('.card-title').innerText,
+                    backDesc: cardCopy.back.element.querySelector('.card-text').innerText,
+                    _setid: this.id,
+                    id: card.id
+                }
+                console.log(attr);
+                const data = await this.update(attr);
+                console.log(data);
+                this.edit();
+            });
+
             if (i===0)
                 cardCopy.card.classList.add('active');
             cardCarousel.querySelector('.carousel-inner').appendChild(cardCopy.card);
@@ -315,14 +332,23 @@ class CardSet {
     }
 
     async delete(id) {
-        const response = await fetch('/api/card', {
-            method: 'DELETE',
-            headers: { 'content-type': 'application/json' },
-            body: JSON.stringify({ id: id })
-        });
-    
-        const data = await response.json();
+        const data = await this.request('DELETE', { id: id })
         return data;
+    }
+
+    async update(card) {
+        const data = await this.request('PUT', card);
+        return data
+    }
+
+    async request(method, body) {
+        const response = await fetch('/api/card', {
+            method: method,
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify(body)
+        })
+        const data = await response.json();
+        return data
     }
 }
 

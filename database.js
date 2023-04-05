@@ -74,7 +74,7 @@ async function getCards(setId) {
 async function updateCard(req) {
     const id = req.id;
     const cursor = await cardCollection.updateOne(
-        { _id: id },
+        { _id: ObjectId(id) },
         { $set: req }
     );
     return cursor;
