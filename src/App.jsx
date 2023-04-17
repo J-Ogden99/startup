@@ -23,6 +23,7 @@ function App() {
       setAuthState(AuthState.Unauthenticated);
     }
   }, [userName]);
+
   return (
     <div className="body text-dark color-primary-0">
         <header className="container-fluid">
