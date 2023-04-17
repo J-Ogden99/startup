@@ -108,3 +108,5 @@ flashed at a quick rate than if we were trying to look at it in the context of a
 - Authentification token is stored in their cookies, from which we find it again when entering other parts of the app.
 
 - Websocket allows a peer-to-peer connection with the server rather than for the client to constantly be checking the server for updates.
+
+- React allows single-page web applications by dynamically updating what UI code gets returned, and also gatekeeping certain returns based on credentials.
