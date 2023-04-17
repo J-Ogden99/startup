@@ -3,6 +3,26 @@ import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
+  const [userName, setUserName] = React.useState(localStorage.getItem('userName') || '');
+
+  // Asynchronously determine if the user is authenticated by calling the service
+  const [authState, setAuthState] = React.useState(AuthState.Unknown);
+  React.useEffect(() => {
+    if (userName) {
+      fetch(`/api/user/${userName}`)
+        .then((response) => {
+          if (response.status === 200) {
+            return response.json();
+          }
+        })
+        .then((user) => {
+          const state = user?.authenticated ? AuthState.Authenticated : AuthState.Unauthenticated;
+          setAuthState(state);
+        });
+    } else {
+      setAuthState(AuthState.Unauthenticated);
+    }
+  }, [userName]);
   return (
     <div className="body text-dark color-primary-0">
         <header className="container-fluid">
@@ -16,9 +36,11 @@ function App() {
                         <li className="nav-item active">
                             <a className="nav-link active" href="index.html">Home</a>
                         </li>
-                        <li className="nav-item">
-                            <a className="nav-link" href="learn.html">Learn</a>
-                        </li>
+                        {authState === AuthState.Authenticated && (
+                          <li className="nav-item">
+                              <a className="nav-link" href="learn.html">Learn</a>
+                          </li>
+                        )}
                     </ul>
                 </div>
             </nav>
