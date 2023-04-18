@@ -1,24 +1,6 @@
-function getSiblings (element) {
-    // for collecting siblings
-    let siblings = [];
-    // if no parent, return no sibling
-    if(!element.parentNode) {
-        return siblings;
-    }
-    // first child of the parent node
-    let sibling  = element.parentNode.firstChild;
+import { getSiblings, FlashCardInput, FlashCardSide, FlashCard, HorizontalCarousel } from "./cards";
 
-    // collecting siblings
-    while (sibling) {
-        if (sibling.nodeType === 1 && sibling !== element) {
-            siblings.push(sibling);
-        }
-        sibling = sibling.nextSibling;
-    }
-    return siblings;
-}
-
-async function getCardsets() {
+export async function getCardsets() {
     document.getElementById('card-creation-carousel-wrapper').innerHTML = '';
     const response = await fetch('/api/cardsets', {
         method: 'GET',
@@ -26,7 +8,7 @@ async function getCardsets() {
     });
     const data = await response.json();
     if (!data) {
-        document.getElementById('card-creation-carousel-wrapper').innerHTML = "<p style='margin-top: 50%;'>No Cardsets Yet!</p>";
+        document.getElementById('card-creation-carousel-wrapper').innerHTML = "<p style={{margin-top: '50%'}}>No Cardsets Yet!</p>";
         return [];
     }
     
@@ -50,7 +32,7 @@ async function getCardsets() {
     return cardSets;
 }
 
-async function initAddCardset() {
+export async function initAddCardset() {
     const cardSets = await getCardsets();
     let input = new CardsetInput();
     let createCardCont = document.querySelector(".card-view-wrapper");
@@ -70,7 +52,7 @@ async function initAddCardset() {
     })
 }
 
-async function addCardset(name, desc) {
+export async function addCardset(name, desc) {
     const response = await fetch('/api/cardset', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
@@ -81,7 +63,7 @@ async function addCardset(name, desc) {
     return data;
 }
 
-async function initRemoveCardset() {
+export async function initRemoveCardset() {
     // let sets = document.querySelectorAll(".cardset-info");
     document.querySelector('.card-view-wrapper').innerHTML = "";
     let sets = await getCardsets();
@@ -101,7 +83,7 @@ async function initRemoveCardset() {
     }
 }
 
-async function removeCardset(id) {
+export async function removeCardset(id) {
     const response = await fetch('/api/cardset', {
         method: 'DELETE',
         headers: { 'content-type': 'application/json' },
@@ -112,7 +94,7 @@ async function removeCardset(id) {
     return data;
 }
 
-class VerticalCardCarousel {
+export class VerticalCardCarousel {
     constructor(containerSelector, cardSelector, scrollSpeed, cardSets) {
         // Get references to the container and card elements
         this.container = document.querySelector(containerSelector);
@@ -127,7 +109,7 @@ class VerticalCardCarousel {
             this.container.appendChild(cardset.infoCard);
         }
         if (cardSets.length == 0)
-            this.container.innerHTML = "<p style='margin-top: 50%;'>No Cardsets Yet!</p>";
+            this.container.innerHTML = "<p style={{margin-top: '50%'}}>No Cardsets Yet!</p>";
         this.cards = this.container.querySelectorAll(cardSelector);
         console.log(this.cards);
         // this.cards.addEventListener('click', () => {
@@ -188,27 +170,27 @@ class VerticalCardCarousel {
         clearInterval(this.intervalId);
     }
 
-    configureWebSocket() {
-        const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
-        this.socket = new WebSocket(`${protocol}://${window.location.host}/ws`);
-        this.socket.onopen = (event) => {
-          this.displayMsg('system', 'game', 'connected');
-        };
-        this.socket.onclose = (event) => {
-          this.displayMsg('system', 'game', 'disconnected');
-        };
-        this.socket.onmessage = async (event) => {
-          const msg = JSON.parse(await event.data.text());
-          if (msg.type === GameEndEvent) {
-            this.displayMsg('player', msg.from, `scored ${msg.value.score}`);
-          } else if (msg.type === GameStartEvent) {
-            this.displayMsg('player', msg.from, `started a new game`);
-          }
-        };
-      }
+    // configureWebSocket() {
+    //     const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
+    //     this.socket = new WebSocket(`${protocol}://${window.location.host}/ws`);
+    //     this.socket.onopen = (event) => {
+    //       this.displayMsg('system', 'game', 'connected');
+    //     };
+    //     this.socket.onclose = (event) => {
+    //       this.displayMsg('system', 'game', 'disconnected');
+    //     };
+    //     this.socket.onmessage = async (event) => {
+    //       const msg = JSON.parse(await event.data.text());
+    //       if (msg.type === GameEndEvent) {
+    //         this.displayMsg('player', msg.from, `scored ${msg.value.score}`);
+    //       } else if (msg.type === GameStartEvent) {
+    //         this.displayMsg('player', msg.from, `started a new game`);
+    //       }
+    //     };
+    //   }
 }
 
-class CardsetInput {
+export class CardsetInput {
     constructor(name = "", desc = "") {
         this.front = new FlashCardSide(name, desc).changeToInput();
         this.front.element.querySelector('.side-title').innerText = "New Cardset";
@@ -232,7 +214,7 @@ class CardsetInput {
     }
 }
 
-class CardSet {
+export class CardSet {
     constructor(setName, desc, id) {
         this.id = id;
         this.name = setName;
@@ -242,12 +224,12 @@ class CardSet {
         this.infoCard.setAttribute("id",
             `${setName.toLowerCase().replace(/[\s_]+/g, "-")}`);
         this.infoCard.innerHTML =
-            '<div class="card-body">\n' +
-            `  <h5 class="card-title">${setName}</h5>\n` +
-            `  <p class="card-text">${desc}</p>\n` +
-            '  <button type="button" class="btn btn-primary learn-btn">Learn</button>\n' +
-            '  <button type="button" class="btn btn-primary edit-btn">Edit</button>\n' +
-            '  <button type="button" class="btn btn-primary add-to-set-btn">Add</button>\n' +
+            '<div className="card-body">\n' +
+            `  <h5 className="card-title">${setName}</h5>\n` +
+            `  <p className="card-text">${desc}</p>\n` +
+            '  <button type="button" className="btn btn-primary learn-btn">Learn</button>\n' +
+            '  <button type="button" className="btn btn-primary edit-btn">Edit</button>\n' +
+            '  <button type="button" className="btn btn-primary add-to-set-btn">Add</button>\n' +
             '</div>'
 
         this.cardIds = [];
@@ -342,7 +324,7 @@ class CardSet {
             )
 
             cardCopy.card.classList.add('carousel-item');
-            cardCopy.card.appendChild
+            // cardCopy.card.appendChild()
 
             let deleteButton = document.createElement("button");
             deleteButton.setAttribute("class", "btn btn-danger flashcard-save-button");

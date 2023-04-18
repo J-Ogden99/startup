@@ -5,6 +5,7 @@ import { getCardsets, VerticalCardCarousel, initAddCardset, initRemoveCardset } 
 import Button from 'react-bootstrap/Button';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../App.css';
+import './learn.css';
 
 export function Learn() {
   return (
@@ -13,12 +14,12 @@ export function Learn() {
             <div id="cardsets-edit" className="container-fluid btn-group">
                 <Button 
                 variant='success' 
-                classNameName="m-0 mt-2"
+                className="m-0 mt-2"
                 onClick={() => initAddCardset()}
                 >Add Cardsets</Button>
                 <Button 
                 variant='danger' 
-                classNameName="m-0 mt-2"
+                className="m-0 mt-2"
                 onClick={() => initRemoveCardset()}
                 >Remove Cardsets</Button>
             </div>

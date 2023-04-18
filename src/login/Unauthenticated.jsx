@@ -4,6 +4,7 @@ import Button from 'react-bootstrap/Button';
 import { MessageDialog } from './messageDialog';
 
 export function Unauthenticated(props) {
+  console.log(props);
   const [userName, setUserName] = useState(props.userName);
   const [password, setPassword] = useState('');
   const [displayError, setDisplayError] = useState(null);
@@ -19,7 +20,7 @@ export function Unauthenticated(props) {
   async function loginOrCreate(endpoint) {
     const response = await fetch(endpoint, {
       method: 'post',
-      body: JSON.stringify({ email: userName, password: password }),
+      body: JSON.stringify({ username: userName, password: password }),
       headers: {
         'Content-type': 'application/json; charset=UTF-8',
       },
@@ -35,8 +36,8 @@ export function Unauthenticated(props) {
 
   return (
     <>
-        <div class="login-div" className="container-fluid">
-            <div id="loginControls" className="container-fluid" style="display: none">
+        <div className="login-div container-fluid">
+            <div id="loginControls" className="container-fluid">
                 <h3 className="text-light">Login to Learn</h3>
                 <div className="input-group mb-3">
                 <span className="input-group-text">Username</span>
@@ -45,7 +46,10 @@ export function Unauthenticated(props) {
                     type='text'
                     value={userName}
                     id='userName'
-                    onChange={(e) => setUserName(e.target.value)}
+                    onChange={(e) => {
+                      setUserName(e.target.value);
+                      console.log(userName);
+                    }}
                     placeholder='username'
                 />
                 </div>

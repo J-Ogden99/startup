@@ -53,20 +53,20 @@ function App() {
         </header>
 
         <Routes>
-        <Route
-          path='/'
-          element={
-            <Login
-              userName={userName}
-              authState={authState}
-              onAuthChange={(userName, authState) => {
-                setAuthState(authState);
-                setUserName(userName);
-              }}
-            />
-          }
-          exact
-        />
+          <Route
+            path='/'
+            element={
+              <Login
+                userName={userName}
+                authState={authState}
+                onAuthChange={(userName, authState) => {
+                  setAuthState(authState);
+                  setUserName(userName);
+                }}
+              />
+            }
+            exact
+          />
           <Route path='/learn' element={<Learn />} />
           <Route path='*' element={<NotFound />} />
         </Routes>
