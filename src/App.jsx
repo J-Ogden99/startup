@@ -1,6 +1,11 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+
+import { NavLink, Route, Routes } from 'react-router-dom';
+import { Login } from './login/login';
+import { Learn } from './learn/learn';
+import { AuthState } from './login/authState';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './App.css';
 
 function App() {
   const [userName, setUserName] = React.useState(localStorage.getItem('userName') || '');
@@ -35,17 +40,37 @@ function App() {
                 <div className="collapse navbar-collapse" id="navbarNavDropdown">
                     <ul className="navbar-nav">
                         <li className="nav-item active">
-                            <a className="nav-link active" href="index.html">Home</a>
+                          <NavLink className='nav-link' to=''>Home</NavLink>
                         </li>
                         {authState === AuthState.Authenticated && (
                           <li className="nav-item">
-                              <a className="nav-link" href="learn.html">Learn</a>
+                            <NavLink className='nav-link' to='learn'>Learn</NavLink>
                           </li>
                         )}
                     </ul>
                 </div>
             </nav>
         </header>
+
+        <Routes>
+        <Route
+          path='/'
+          element={
+            <Login
+              userName={userName}
+              authState={authState}
+              onAuthChange={(userName, authState) => {
+                setAuthState(authState);
+                setUserName(userName);
+              }}
+            />
+          }
+          exact
+        />
+          <Route path='/learn' element={<Learn />} />
+          <Route path='*' element={<NotFound />} />
+        </Routes>
+
         <footer className="bg-dark text-dark text-muted">
             <div className="container-fluid">
                 <span className="text-reset">Author: Josh Ogden</span>
@@ -59,6 +84,10 @@ function App() {
         </footer>
     </div>
   );
+}
+
+function NotFound() {
+  return <main className='container-fluid bg-secondary text-center'>404: Return to sender. Address unknown.</main>;
 }
 
 export default App;

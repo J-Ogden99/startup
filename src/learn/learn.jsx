@@ -1,27 +1,33 @@
 import React from 'react';
 
+import { getCardsets, VerticalCardCarousel, initAddCardset, initRemoveCardset } from './cardsets';
+
+import Button from 'react-bootstrap/Button';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '../App.css';
+
 export function Learn() {
   return (
-    <main id="card-creation-main" class="container-fluid text-center ">
-        <div id="cardset-carousel" class="container-fluid side-bar bg-light">
-            <div id="cardsets-edit" class="container-fluid btn-group">
+    <main id="card-creation-main" className="container-fluid text-center ">
+        <div id="cardset-carousel" className="container-fluid side-bar bg-light">
+            <div id="cardsets-edit" className="container-fluid btn-group">
                 <Button 
                 variant='success' 
-                className="m-0 mt-2"
+                classNameName="m-0 mt-2"
                 onClick={() => initAddCardset()}
                 >Add Cardsets</Button>
                 <Button 
                 variant='danger' 
-                className="m-0 mt-2"
+                classNameName="m-0 mt-2"
                 onClick={() => initRemoveCardset()}
                 >Remove Cardsets</Button>
             </div>
-            <div id="card-creation-carousel-wrapper" class="container-fluid overflow-auto vert-carousel-wrapper">
+            <div id="card-creation-carousel-wrapper" className="container-fluid overflow-auto vert-carousel-wrapper">
                 
             </div>
         </div>
-        <div id="card-creation" class="container-fluid">
-            <div class="container-fluid card-view-wrapper">
+        <div id="card-creation" className="container-fluid">
+            <div className="container-fluid card-view-wrapper">
 
             </div>
 
